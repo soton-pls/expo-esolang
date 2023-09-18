@@ -3,11 +3,13 @@
 ## Goal
 
 A DSL designed in a similar manor to brainfuck, where the goal is for the user to solve the towers of hanoi problem.
+
 Basic Features:
 - **Three Towers** of `n` **Blocks**
 - A **Pointer** to move blocks
 - An instruction set to control the pointer
 - **Visual** of **Final Tower Arrangement**
+
 Expansive Features:
 - **Multiple Towers**
 - **Interactive REPL**
