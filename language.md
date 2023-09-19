@@ -25,7 +25,11 @@ Invalid moves will be ignored, or will cause the script to `break`.
 ## Syntax Features
 
 `>` : Move the cursor right
+
 `<` : Move the cursor left
+
 `.` : Interact (Pickup / Drop)
+
 `[` : While holding block
+
 `]` : End While
