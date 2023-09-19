@@ -2,7 +2,7 @@
 
 ## Goal
 
-A DSL designed in a similar manor to brainfuck, where the goal is for the user to solve the towers of hanoi problem.
+A Toy Language designed in a similar manor to brainfuck, where the goal is for the user to solve the towers of hanoi problem.
 
 Basic Features:
 - **Three Towers** of `n` **Blocks**
