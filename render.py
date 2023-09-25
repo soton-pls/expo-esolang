@@ -32,7 +32,7 @@ def render_hanoi(arrangement: List[List[int]], pointer: Tuple[int, int], code=No
     max_height = sum(sum(1 for _ in t) for t in arrangement) + 1
 
     # if there's something being picked up, make sure we add 1 to this
-    if pointer[1] != -1:
+    if pointer[1] is not None:
         max_height += 1
 
     # 2 space gap between each tower, size diff between two sequential elements is 2 and initial length of element is 3,
@@ -43,7 +43,7 @@ def render_hanoi(arrangement: List[List[int]], pointer: Tuple[int, int], code=No
     # show the pointer
     line = ""
     for x in range(len(arrangement)):
-        if pointer[1] != -1 and pointer[0] == x:
+        if pointer[1] is not None and pointer[0] == x:
             # show the element
             block = pointer[1]
             size = (1 + block * 2)
