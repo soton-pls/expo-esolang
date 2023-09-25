@@ -1,6 +1,7 @@
 import platform
 import os
 import math
+import atexit
 
 from typing import List, Tuple
 
@@ -17,8 +18,13 @@ def prepare_ansi():
         # apparently this yanks you into the new shell mode if you're running from old cmd and therefore ansi works
         os.system("")
     else:
-        # lunix
+        # linux
         os.system("clear")
+
+    # don't show cursor
+    print("\033[?25l", end="")
+    # show cursor again once program is over
+    atexit.register(lambda: print("\033[?25h", end=""))
 
 
 def render_hanoi(arrangement: List[List[int]], pointer: Tuple[int, int], code=None, element_char="█", tower_char="|", floor_char="█"):
