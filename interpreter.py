@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 from time import sleep
 from typing import TypeAlias
 
@@ -33,7 +35,7 @@ def skip(code: str, pointer: int, count: int = 0) -> int:
 
 
 def solver(arrangement: Arrangement, code: str, location: int = 0, holding: int = -1, pointer: int = 0,
-           loopLocations: list[int] = []) -> (tuple[Arrangement, Pointer] | tuple[Arrangement, tuple[int]]):
+           loop_locations: list[int] = []) -> (tuple[Arrangement, Pointer] | tuple[Arrangement, tuple[int]]):
 
     render_hanoi(arrangement, (location, holding))
 
@@ -42,15 +44,17 @@ def solver(arrangement: Arrangement, code: str, location: int = 0, holding: int 
 
     instruction = code[pointer]
     print(instruction)
+
+    sleep_time = 0.5
     match instruction:
         case ">":
-            sleep(1)
+            sleep(sleep_time)
             location = min(location + 1, 2)
         case "<":
-            sleep(1)
+            sleep(sleep_time)
             location = max(location - 1, 0)
         case ".":
-            sleep(1)
+            sleep(sleep_time)
             if holding == -1:
                 holding = arrangement[location].pop(0)
             elif next(iter(arrangement[location]), 100) > holding:
@@ -60,13 +64,13 @@ def solver(arrangement: Arrangement, code: str, location: int = 0, holding: int 
             if holding == -1:
                 pointer = skip(code, pointer)
             else:
-                loopLocations.insert(0, pointer)
+                loop_locations.insert(0, pointer)
         case "]":
-            pointer = loopLocations.pop(0) - 1
+            pointer = loop_locations.pop(0) - 1
 
     print(pointer)
 
-    return solver(arrangement, code, location, holding, pointer + 1, loopLocations)
+    return solver(arrangement, code, location, holding, pointer + 1, loop_locations)
 
 
 def hanoiPrint(arrangement, pointer):
@@ -97,8 +101,9 @@ def hanoiPrint(arrangement, pointer):
 
 if __name__ == "__main__":
     # scriptFile = input("Script: ")
-    fileContents = open("solution", "r").read()
-    script = lexer(fileContents)
+    with open("solution", "r") as f:
+        file_contents = f.read()
+    script = lexer(file_contents)
     if script == "":
         print("INVALID CODE")
     else:
