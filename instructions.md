@@ -11,7 +11,7 @@ However, this language is an esoteric programming language, meaning that its
 syntax isn't the most conventional or easiest to use. Our language is inspired
 by "Brainfuck", in that it has a very small instruction set where the user
 controls a pointer that can interact with the Towers of Hanoi! We have also
-added an extra "scratch" register for storing blocks not in use.
+added an extra "bag" you can put blocks you are holding into.
 
 ## Language Syntax
 
@@ -19,15 +19,15 @@ added an extra "scratch" register for storing blocks not in use.
 
 `<` : Move the cursor left
 
-`.` : Interact (Pickup / Drop)
+`.` : Interact (Pickup / Drop block)
 
 `[` : While holding block (If not holding block, jump to corresponding `]`)
 
 `]` : End While (If holding block, jump back to corresponding `[`)
 
-`~` : Swap Held and Scratch value
+`~` : Swap Held and Bag blocks
 
 Any characters written in the solution that aren't one of these 6 will be
-ignored. An invalid input (moving right when on the rightmost column, attempting
-to place a disc on an invalid stack) will simply not compute but the solution
-will continue running.
+ignored. An invalid input (attempting to place a disc on an invalid stack or
+pick up when there is nothing to pick up) will simply not compute but the
+solution will continue running.

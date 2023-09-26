@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-import time, sys, signal, argparse, os, atexit, platform, math
+import time, sys, signal, argparse, os, atexit, platform, math, json
 from typing import TypeAlias, Optional
 
 
@@ -19,16 +19,19 @@ class HanoiInterpreter:
         self,
         text_program: str,
         initial_state: Arrangement,
+        goals: list[Arrangement],
         sleep_time: Optional[float] = None,
     ):
         self.parse(text_program)
         self.state = initial_state
+        self.goals = goals
         self.sleep_time = sleep_time
         self.pc = 0
         self.tower_idx = 0
         self.held_value: Optional[int] = None
         self.scratch_value: Optional[int] = None
         self.max_height = sum(sum(1 for _ in t) for t in self.state) + 1
+        self.cycles = 0
 
         self.prepare_ansi()
         self.run()
@@ -61,6 +64,23 @@ class HanoiInterpreter:
     def run(self):
         self.render()
         while self.pc < len(self.program):
+            if self.state in self.goals:
+                print("\u001b[35;1m", end="")
+                print(
+"""
+██╗██╗██╗    ██╗    ██╗██╗███╗   ██╗███╗   ██╗███████╗██████╗     ██╗██╗██╗
+██║██║██║    ██║    ██║██║████╗  ██║████╗  ██║██╔════╝██╔══██╗    ██║██║██║
+██║██║██║    ██║ █╗ ██║██║██╔██╗ ██║██╔██╗ ██║█████╗  ██████╔╝    ██║██║██║
+╚═╝╚═╝╚═╝    ██║███╗██║██║██║╚██╗██║██║╚██╗██║██╔══╝  ██╔══██╗    ╚═╝╚═╝╚═╝
+██╗██╗██╗    ╚███╔███╔╝██║██║ ╚████║██║ ╚████║███████╗██║  ██║    ██╗██╗██╗
+╚═╝╚═╝╚═╝     ╚══╝╚══╝ ╚═╝╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝    ╚═╝╚═╝╚═╝
+""", end="")
+                print("\u001b[34;1m")
+                print(f"Program length: {len(self.program)} characters")
+                print(f"Execution time: {self.cycles} instructions")
+                print("\u001b[0m")
+                return
+
             if self.sleep_time is not None:
                 time.sleep(self.sleep_time)
             else:
@@ -133,7 +153,7 @@ class HanoiInterpreter:
             self.state
         )
 
-        lines += "\n\nscratch: "
+        lines += "\n\nbag: "
         if self.scratch_value is not None:
             lines += render_block(self.scratch_value)
         lines += " " * spacing
@@ -141,7 +161,7 @@ class HanoiInterpreter:
 
         program_width = 60
         program_chunks = [
-            self.program[i : i + program_width]
+            (self.program + [" "])[i : i + program_width]
             for i in range(0, len(self.program), program_width)
         ]
         chunk = self.pc // program_width
@@ -174,6 +194,7 @@ class HanoiInterpreter:
         atexit.register(lambda: print("\033[?25h", end=""))
 
     def step(self):
+        self.cycles += 1
         next_pc = self.pc + 1
         match self.program[self.pc]:
             case ">":
@@ -218,6 +239,7 @@ if __name__ == "__main__":
         type=float,
         help="time to spend on each instruction. if not specified, requires user to press enter to advance",
     )
+    parser.add_argument("config", type=str, help="path to json config file")
 
     args = parser.parse_args()
 
@@ -225,7 +247,17 @@ if __name__ == "__main__":
     signal.signal(signal.SIGINT, lambda signum, frame: sys.exit())
 
     try:
+        with open(args.config, "r") as f:
+            config = json.load(f)
+
+        if "init" not in config or "goals" not in config:
+            exit_error(f"{args.config} is not a valid config, missing \"init\" or \"goals\"")
+
+    except OSError:
+        exit_error(f'could not open config "{args.config}"')
+
+    try:
         with open(args.input, "r") as f:
-            HanoiInterpreter(f.read(), [list(range(6)), [], []], args.time)
+            HanoiInterpreter(f.read(), config["init"], config["goals"], args.time)
     except OSError:
         exit_error(f'could not open input "{args.input}"')
