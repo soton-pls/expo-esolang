@@ -1,1 +1,14 @@
-.[[>.]<<.]
+.[
+# try to move a to c, and if it fails put a back and move c to a
+# starts on a, ends on c
+[~<.[.~.[>.<.>.<.~]]~[.].~>]<~.[>.<]
+# try to move a to b, and if it fails put a back and move b to a
+# starts on a, ends on b
+>
+.[~>.[.~.[<.>.<.>.~]]~[.].~<]>~.[<.>]
+# try to move b to c, and if it fails put b back and move c to b
+# starts on b, ends on c
+.[~>.[.~.[<.>.<.>.~]]~[.].~<]>~.[<.>]
+# back to a
+>.
+]

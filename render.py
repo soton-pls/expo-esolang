@@ -3,7 +3,7 @@ import os
 import math
 import atexit
 
-from typing import List, Tuple
+from typing import Optional
 
 cols = (
     37, 31, 33, 32, 36, 34, 35
@@ -27,35 +27,45 @@ def prepare_ansi():
     atexit.register(lambda: print("\033[?25h", end=""))
 
 
-def render_hanoi(arrangement: List[List[int]], pointer: Tuple[int, int], code=None, element_char="█", tower_char="|", floor_char="█"):
+def render_hanoi(arrangement: list[list[int]], scratch: Optional[int], pointer: tuple[int, int], element_char="█", tower_char="|", floor_char="█"):
     # count the number of elements in the arrangement tuple, add 1 to get maximum height
     max_height = sum(sum(1 for _ in t) for t in arrangement) + 1
 
     # if there's something being picked up, make sure we add 1 to this
     if pointer[1] is not None:
         max_height += 1
+    if scratch is not None:
+        max_height += 1
 
     # 2 space gap between each tower, size diff between two sequential elements is 2 and initial length of element is 3,
     # so spacing is simply (max_height * 2) + 3
     spacing = (max_height * 2) + 5
 
-    lines = ""
-    # show the pointer
-    line = ""
-    for x in range(len(arrangement)):
-        if pointer[1] is not None and pointer[0] == x:
-            # show the element
-            block = pointer[1]
-            size = (1 + block * 2)
-            pad_needed = spacing - size
+    def render_block(block: int) -> str:
+        size = (1 + block * 2)
+        return f"\u001b[{cols[block % len(cols)]};1m{element_char * size}\u001b[0m"
 
-            part_str = "{}\u001b[{};1m{}\u001b[0m{}".format(
-                " " * math.ceil(pad_needed / 2),
-                cols[block % len(cols)], element_char * size,
-                " " * math.floor(pad_needed / 2),
-            )
-        elif pointer[0] == x:
-            part_str = "[v]".center(spacing)
+    def part(block: int) -> str:
+        size = (1 + block * 2)
+        pad_needed = spacing - size
+
+        return "{}{}{}".format(
+            " " * math.ceil(pad_needed / 2),
+            render_block(block),
+            " " * math.floor(pad_needed / 2),
+        )
+
+    lines = ""
+
+    # show the pointer
+    line = "  "
+    for x in range(len(arrangement)):
+        if pointer[0] == x:
+            if pointer[1] is not None:
+                # show the element
+                part_str = part(pointer[1])
+            else:
+                part_str = "[v]".center(spacing)
         else:
             # show nothing
             part_str = "".center(spacing)
@@ -78,15 +88,7 @@ def render_hanoi(arrangement: List[List[int]], pointer: Tuple[int, int], code=No
 
             if yt < len(arrangement[x]) and yt >= 0:
                 # show the element
-                block = arrangement[x][yt]
-                size = (1 + block*2)
-                pad_needed = spacing - size
-
-                part_str = "{}\u001b[{};1m{}\u001b[0m{}".format(
-                    " " * math.ceil(pad_needed / 2),
-                    cols[block % len(cols)], element_char * size,
-                    " " * math.floor(pad_needed / 2),
-                )
+                part_str = part(arrangement[x][yt])
             else:
                 # show the bare tower
                 part_str = tower_char.center(spacing)
@@ -99,11 +101,10 @@ def render_hanoi(arrangement: List[List[int]], pointer: Tuple[int, int], code=No
         a=(floor_char * (spacing - 4))
     ) * len(arrangement)
 
-    if code:
-        lines += "\n\n    \u001b[36m[{}] \u001b[0m{} ".format(
-            code[0], "".join(code[1:])
-        )
-    else:
-        lines += "\n\n       "
+    lines += "\n\nscratch: "
+    if scratch is not None:
+        lines += render_block(scratch)
+    lines += " " * spacing
+    lines += "\n"
 
-    print("\u001b[3;3H"+lines)
+    print("\u001b[H\n"+lines)

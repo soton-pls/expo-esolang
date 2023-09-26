@@ -1,8 +1,7 @@
 #! /usr/bin/env python3
 
-import time, sys
+import time, sys, signal, argparse
 from typing import TypeAlias, Optional
-import argparse
 
 from render import *
 
@@ -28,13 +27,14 @@ class HanoiInterpreter:
         self.pc = 0
         self.tower_idx = 0
         self.held_value: Optional[int] = None
+        self.scratch_value: Optional[int] = None
 
         prepare_ansi()
         self.run()
 
     def parse(self, text_program: str):
         self.program = list(
-            filter(lambda x: x in ["<", ">", ".", "[", "]"], text_program)
+            filter(lambda x: x in ["<", ">", ".", "[", "]", "~"], text_program)
         )
 
         # All loops have statically defined branch addresses, so we can just
@@ -51,7 +51,7 @@ class HanoiInterpreter:
                     exit_error(f"unexpected ] at token {pc}")
 
                 start_pc = loop_stack.pop()
-                self.back_jumps[pc] = start_pc
+                self.back_jumps[pc] = start_pc + 1
                 self.forward_jumps[start_pc] = pc + 1
 
         if loop_stack:
@@ -68,7 +68,7 @@ class HanoiInterpreter:
             self.render()
 
     def render(self):
-        render_hanoi(self.state, (self.tower_idx, self.held_value))
+        render_hanoi(self.state, self.scratch_value, (self.tower_idx, self.held_value))
         print("".join(self.program))
         pre_space = " " * self.pc
         post_space = " " * (len(self.program) - self.pc - 1)
@@ -78,23 +78,33 @@ class HanoiInterpreter:
         next_pc = self.pc + 1
         match self.program[self.pc]:
             case ">":
-                self.tower_idx = min(self.tower_idx + 1, len(self.state) - 1)
+                self.tower_idx += 1
             case "<":
-                self.tower_idx = max(self.tower_idx - 1, 0)
+                self.tower_idx -= 1
             case ".":
                 if self.held_value is None:
-                    self.held_value = self.state[self.tower_idx].pop(0)
+                    if self.state[self.tower_idx]:
+                        self.held_value = self.state[self.tower_idx].pop(0)
                 elif (
                     not self.state[self.tower_idx]
                     or self.state[self.tower_idx][0] > self.held_value
                 ):
                     self.state[self.tower_idx].insert(0, self.held_value)
                     self.held_value = None
+            # As in brainfuck
             case "[":
                 if self.held_value is None:
                     next_pc = self.forward_jumps[self.pc]
             case "]":
-                next_pc = self.back_jumps[self.pc]
+                if self.held_value is not None:
+                    next_pc = self.back_jumps[self.pc]
+            # Swap held with scratch reg
+            case "~":
+                tmp = self.scratch_value
+                self.scratch_value = self.held_value
+                self.held_value = tmp
+
+        self.tower_idx %= len(self.state)
         self.pc = next_pc
 
 
@@ -112,8 +122,11 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
+    # Exit nicely on ctrl-c
+    signal.signal(signal.SIGINT, lambda signum, frame: sys.exit())
+
     try:
         with open(args.input, "r") as f:
-            HanoiInterpreter(f.read(), [[1, 2, 3], [], []], args.time)
+            HanoiInterpreter(f.read(), [list(range(7)), [], []], args.time)
     except OSError:
         exit_error(f'could not open input "{args.input}"')
