@@ -1,0 +1,23 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Hanoi 3 Step",
+            "type": "python",
+            "request": "launch",
+            "program": "hanoi.py",
+            "args": "problems/hanoi_3.json",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        },
+        {
+            "name": "Hanoi 3 Auto",
+            "type": "python",
+            "request": "launch",
+            "program": "hanoi.py",
+            "args": "--time 0.5 problems/hanoi_3.json",
+            "console": "integratedTerminal",
+            "justMyCode": true
+        }
+    ]
+}

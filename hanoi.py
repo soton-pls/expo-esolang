@@ -87,6 +87,10 @@ class HanoiInterpreter:
                 input()
             self.step()
             self.render()
+        
+        # Hacky - hang on finished program
+        while True:
+            pass
 
     def render(self):
         # 2 space gap between each tower, size diff between two sequential elements is 2 and initial length of element is 3,
@@ -162,7 +166,7 @@ class HanoiInterpreter:
         program_width = 60
         program_chunks = [
             (self.program + [" "])[i : i + program_width]
-            for i in range(0, len(self.program), program_width)
+            for i in range(0, len(self.program) + 1, program_width)
         ]
         chunk = self.pc // program_width
         token_idx = self.pc % program_width
