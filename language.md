@@ -8,6 +8,7 @@ Basic Features:
 - **Three Towers** of `n` **Blocks**
 - A **Pointer** to move blocks
 - An instruction set to control the pointer
+- A scratch register
 - **Visual** of **Final Tower Arrangement**
 
 Expansive Features:
@@ -33,3 +34,5 @@ Invalid moves will be ignored, or will cause the script to `break`.
 `[` : While holding block
 
 `]` : End While
+
+`~` : Swap Held and Scratch value

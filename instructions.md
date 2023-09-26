@@ -10,7 +10,8 @@ We have created a "toy-language" that allows you to solve the Towers of Hanoi.
 However, this language is an esoteric programming language, meaning that its
 syntax isn't the most conventional or easiest to use. Our language is inspired
 by "Brainfuck", in that it has a very small instruction set where the user
-controls a pointer that can interact with the Towers of Hanoi!
+controls a pointer that can interact with the Towers of Hanoi! We have also
+added an extra "scratch" register for storing blocks not in use.
 
 ## Language Syntax
 
@@ -20,11 +21,13 @@ controls a pointer that can interact with the Towers of Hanoi!
 
 `.` : Interact (Pickup / Drop)
 
-`[` : While holding block
+`[` : While holding block (If not holding block, jump to corresponding `]`)
 
-`]` : End While
+`]` : End While (If holding block, jump back to corresponding `[`)
 
-Any characters written in the solution that aren't one of these 5 will be
+`~` : Swap Held and Scratch value
+
+Any characters written in the solution that aren't one of these 6 will be
 ignored. An invalid input (moving right when on the rightmost column, attempting
 to place a disc on an invalid stack) will simply not compute but the solution
 will continue running.

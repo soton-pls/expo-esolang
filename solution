@@ -1,14 +1,13 @@
+# move a to c or c to a
+.[~<.[.~.[>.<.>.<.~]]~[.].~>]<~.[>.<]>
+# move a to b or b to a
+.[~>.[.~.[<.>.<.>.~]]~[.].~<]>~.[<.>]
+# loop (offset to ensure a block can always be picked up)
 .[
-# try to move a to c, and if it fails put a back and move c to a
-# starts on a, ends on c
-[~<.[.~.[>.<.>.<.~]]~[.].~>]<~.[>.<]
-# try to move a to b, and if it fails put a back and move b to a
-# starts on a, ends on b
->
+# move b to c or c to b
+ [~>.[.~.[<.>.<.>.~]]~[.].~<]>~.[<.>]>
+# move a to c or c to a
+.[~<.[.~.[>.<.>.<.~]]~[.].~>]<~.[>.<]>
+# move a to b or b to a
 .[~>.[.~.[<.>.<.>.~]]~[.].~<]>~.[<.>]
-# try to move b to c, and if it fails put b back and move c to b
-# starts on b, ends on c
-.[~>.[.~.[<.>.<.>.~]]~[.].~<]>~.[<.>]
-# back to a
->.
-]
+.]
