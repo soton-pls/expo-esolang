@@ -61,12 +61,9 @@ class HanoiInterpreter:
         if loop_stack:
             exit_error("mismatched brackets. expected [ at EOF")
 
-    def run(self):
-        self.render()
-        while self.pc < len(self.program):
-            if self.state in self.goals:
-                print("\u001b[35;1m", end="")
-                print(
+    def win(self):
+        print("\u001b[35;1m", end="")
+        print(
 """
 ██╗██╗██╗    ██╗    ██╗██╗███╗   ██╗███╗   ██╗███████╗██████╗     ██╗██╗██╗
 ██║██║██║    ██║    ██║██║████╗  ██║████╗  ██║██╔════╝██╔══██╗    ██║██║██║
@@ -75,19 +72,29 @@ class HanoiInterpreter:
 ██╗██╗██╗    ╚███╔███╔╝██║██║ ╚████║██║ ╚████║███████╗██║  ██║    ██╗██╗██╗
 ╚═╝╚═╝╚═╝     ╚══╝╚══╝ ╚═╝╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝    ╚═╝╚═╝╚═╝
 """, end="")
-                print("\u001b[34;1m")
-                print(f"Program length: {len(self.program)} characters")
-                print(f"Execution time: {self.cycles} instructions")
-                print("\u001b[0m")
-                return
+        print("\u001b[34;1m")
+        print(f"Program length: {len(self.program)} characters")
+        print(f"Execution time: {self.cycles} instructions")
+        print("\u001b[0m")
+        sys.exit()
 
+    def run(self):
+        self.render()
+        if self.state in self.goals:
+            self.win()
+
+        while self.pc < len(self.program):
             if self.sleep_time is not None:
                 time.sleep(self.sleep_time)
             else:
                 input()
+
             self.step()
             self.render()
-        
+
+            if self.state in self.goals:
+                self.win()
+
         # Hacky - hang on finished program
         while True:
             pass
