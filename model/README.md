@@ -9,7 +9,7 @@ SystemVerilog, with which we have proved the smallest program to solve Hanoi for
 3 towers takes 9 characters.
 
 To run the proofs, you need [Yosys](https://github.com/YosysHQ/yosys),
-[SymbiYosys](https://github.com/YosysHQ/sby), and
+[SymbiYosys](https://github.com/YosysHQ/sby), [sv2v](https://github.com/zachjs/sv2v) and
 [GTKWave](https://gtkwave.sourceforge.net/) to view the resulting waveforms.
 
 # Finding a length 9 program
