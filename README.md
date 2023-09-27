@@ -13,3 +13,5 @@ You can replace `problems/hanoi_3.json` with another Json file found in `problem
 You can replace the number after `--time` with a number of seconds to wait between showing each step of the animation (i.e. a lower number will speed up the animation process). You can also optionally remove this parameter and step through your solution by pressing the enter key (make sure you're focused on the terminal window to do so)
 ## Solutions
 The `solutions/` folder contains a selection of solutions using different subsets of the characters, including our winning 9 character general solution!
+## Credits
+Credits to Dillon Geary and George Rennie for designing the language and righting the interpreter. Credits also to Chris Taperell (https://plaao.net) for creating the ANSI animation.
