@@ -14,4 +14,4 @@ You can replace the number after `--time` with a number of seconds to wait betwe
 ## Solutions
 The `solutions/` folder contains a selection of solutions using different subsets of the characters, including our winning 9 character general solution!
 ## Credits
-Credits to Dillon Geary and George Rennie for designing the language and righting the interpreter. Credits also to Chris Taperell (https://plaao.net) for creating the ANSI animation.
+Credits to Dillon Geary and George Rennie for designing the language and writing the interpreter. Credits also to Chris Taperell (https://plaao.net) for creating the ANSI animation.
