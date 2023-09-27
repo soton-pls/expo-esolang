@@ -1,0 +1,19 @@
+# Check if a length 9 program can solve towers of hanoi. This should produce
+# a counterexample that can be viewed with the solution in `mem`. You can view
+# this by opening `hanoi_9/engine_0/trace.vcd` in gtkwave. The value of `mem`
+# can be decoded with `decode_enum_str.py`
+
+[options]
+mode prove
+
+[engines]
+abc pdr
+
+[script]
+!sv2v -w=adjacent -E Assert hanoi.sv
+read_verilog -formal hanoi.v
+chparam -set PROG_SIZE 9 hanoi
+prep -top hanoi
+
+[files]
+hanoi.sv

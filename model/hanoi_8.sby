@@ -1,0 +1,31 @@
+[tasks]
+--pycode-begin--
+for len in range(2, 9):
+	for tok in "LEFT RIGHT INTERACT LOOP_BEGIN LOOP_END SWAP NOP".split():
+		output(f"len_{len}_tok_{tok}")
+--pycode-end--
+
+[options]
+mode prove
+
+[engines]
+abc pdr
+
+[script]
+--pycode-begin--
+# For each length from 2 to 8 (0 and 1 cause verilog compile errs), check
+# if there is a program that wins hanoi, case splitting in the first token
+# for better proof performance
+for len in range(2, 9):
+	for tok in "LEFT RIGHT INTERACT LOOP_BEGIN LOOP_END SWAP NOP".split():
+		output(f"len_{len}_tok_{tok}:")
+		output(f"!sv2v -w=adjacent -E Assert -DPROG_SIZE={len} hanoi.sv")
+		output("read_verilog -formal hanoi.v")
+		output(f"chparam -set PROG_SIZE {len} hanoi")
+		output("--")
+--pycode-end--
+
+prep -top hanoi
+
+[files]
+hanoi.sv
