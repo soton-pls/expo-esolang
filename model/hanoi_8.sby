@@ -19,7 +19,7 @@ abc pdr
 for len in range(2, 9):
 	for tok in "LEFT RIGHT INTERACT LOOP_BEGIN LOOP_END SWAP NOP".split():
 		output(f"len_{len}_tok_{tok}:")
-		output(f"!sv2v -w=adjacent -E Assert -DPROG_SIZE={len} hanoi.sv")
+		output(f"!sv2v -w=adjacent -E Assert -DFIRST_TOK=TOK_{tok} hanoi.sv")
 		output("read_verilog -formal hanoi.v")
 		output(f"chparam -set PROG_SIZE {len} hanoi")
 		output("--")
